@@ -1,10 +1,15 @@
-import sqlite3
+import os
+import psycopg2
 from data_models import Items, Item
 
+def get_db_connection():
+    # Use DATABASE_URL environment variable for connection
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    return conn
 
 def store_item_details(items: Items) -> None:
     """Store item details from an Items instance into the SQLite database."""
-    conn = sqlite3.connect('../items.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     # Create a table to store item details
@@ -22,79 +27,74 @@ def store_item_details(items: Items) -> None:
 
         cursor.execute('''
         INSERT INTO item_location (item, location)
-        VALUES (?, ?)
+        VALUES (%s, %s)
         ''', (item, location))
 
     conn.commit()
+    cursor.close()
     conn.close()
 
 
 def retrieve_all_item_and_location() -> Items:
-    """Retrieve item details from the SQLite database and return as an Items instance."""
-    # Connect to SQLite database
-    conn = sqlite3.connect('../items.db')
+    """Retrieve item details from the PostgreSQL database and return as an Items instance."""
+    conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Retrieve all item details from the database
     cursor.execute('SELECT item, location FROM item_location')
     rows = cursor.fetchall()
 
-    # Create Item instances from the retrieved rows
     items_list = [Item(item=row[0], location=row[1]) for row in rows]
 
-    # Close the connection
+    cursor.close()
     conn.close()
 
-    # Return an Items instance containing the list of Item instances
     return Items(items=items_list)
 
 
 def retrieve_items() -> [str]:
-    """Retrieve items only from the SQLite database and return as an Items instance."""
-    # Connect to SQLite database
-    conn = sqlite3.connect('../items.db')
+    """Retrieve items only from the PostgreSQL database."""
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     # Retrieve all item details from the database
-    cursor.execute('SELECT item FROM item_location')  # Retrieve both item and location
+    cursor.execute('SELECT item FROM item_location')
     rows = cursor.fetchall()
 
-    # Create Item instances from the retrieved rows
-    l = [row[0] for row in rows]  # Include location
+    # Create a list of items from the retrieved rows
+    items_list = [row[0] for row in rows]
 
     # Close the connection
+    cursor.close()
     conn.close()
 
-    # Return an Items instance containing the list of Item instances
-    return l
+    return items_list
+
 
 
 def retrieve_location_by_item(item_name: str) -> Items:
-    """Retrieve locations for a given item from the SQLite database."""
-    # Connect to SQLite database
-    conn = sqlite3.connect('../items.db')
+    """Retrieve locations for a given item from the PostgreSQL database."""
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     items_list = []
 
     try:
         # Retrieve the location for the specified item
-        cursor.execute('SELECT location FROM item_location WHERE item = ?', (item_name,))
+        cursor.execute('SELECT location FROM item_location WHERE item = %s', (item_name,))
         rows = cursor.fetchall()
 
-        items_list.extend([Item(name=item_name, location=row[0], item=item_name) for row in rows])
+        items_list.extend([Item(item=item_name, location=row[0]) for row in rows])
 
     finally:
         # Ensure the connection is closed even if an error occurs
+        cursor.close()
         conn.close()
 
-    # Return an Items object containing the list of Item objects
     return Items(items=items_list)
 
-
 def drop_all_items():
-    # Connect to SQLite database
-    conn = sqlite3.connect('../items.db')
+    """Delete all records from the item_location table in the PostgreSQL database."""
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     # Execute a command to delete all records from the item_location table
@@ -102,6 +102,7 @@ def drop_all_items():
 
     # Commit the changes and close the connection
     conn.commit()
+    cursor.close()
     conn.close()
 
 
@@ -114,7 +115,6 @@ if __name__ == "__main__":
 
     store_item_details(items_to_store)
     print(retrieve_items())
-
 
     items = retrieve_location_by_item('keys')
     print(items)
