@@ -3,15 +3,13 @@
 import asyncio
 import websockets
 import os
-import json
+from process import answer
 
-async def echo(websocket):  # Removed 'path' parameter as it's no longer needed in newer websockets versions
+async def process(websocket):  # Removed 'path' parameter as it's no longer needed in newer websockets versions
     try:
         async for message in websocket:
-            print("Received message:", message, flush=True)
-            
-            # Echo the message back
-            await websocket.send(message)
+            response = answer(message)
+            await websocket.send(response)
             await websocket.send("[END]")
     except websockets.exceptions.ConnectionClosed:
         print("Client disconnected", flush=True)
@@ -23,7 +21,7 @@ async def main():
     
     # Create the server with CORS headers
     async with websockets.serve(
-        echo,
+        process,
         "0.0.0.0",
         int(os.environ.get('PORT', 8090))
     ) as server:
