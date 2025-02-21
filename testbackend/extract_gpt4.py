@@ -1,10 +1,10 @@
 from openai import OpenAI
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from data_models import Items
 
 # This version of retrieval uses GPT4 JSON schema. It's cool since it always sticks to the schema, less hallucination.
 
-load_dotenv()
+# load_dotenv()
 client = OpenAI()
 
 def extract_gpt4(t) -> Items:

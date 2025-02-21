@@ -2,7 +2,7 @@ import faiss
 from langchain_openai.embeddings import OpenAIEmbeddings
 import numpy as np
 from openai import OpenAI
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 # import json
 from data_models import Item, Items, Intent
 # from typing import Optional
@@ -14,7 +14,7 @@ from readwrite_db import *
 logging.basicConfig(level=logging.ERROR, filename='error.log',
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-load_dotenv()
+# load_dotenv()
 client = OpenAI()
 
 embedding_model = OpenAIEmbeddings()
