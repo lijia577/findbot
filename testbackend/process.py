@@ -77,7 +77,7 @@ def process_store(message):
 def process_others(message):
     return "sorry I can't help with that"
 
-print(process_store("cat and dog are on the table"))
+# print(process_store("cat and dog are on the table"))
 
 
 # Example items with locations
