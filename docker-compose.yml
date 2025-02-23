@@ -3,7 +3,7 @@ version: '3.8'
 services:
   findbot:
     build:
-      context: ./
+      context: $(pwd)
       dockerfile: ./Dockerfile
     container_name: findbot
     volumes:
@@ -17,7 +17,7 @@ services:
       resources:
         limits:
           memory: 500M
-    command: /opt/conda/bin/conda run -n findbot /bin/bash -c python /app/test.py
+    command: python /app/test.py
 
 networks:
   findbot_network:

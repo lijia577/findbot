@@ -27,9 +27,7 @@ COPY requirements.txt /tmp/requirements.txt
 
 # Install Python packages from requirements.txt into the 'findbot' environment
 RUN /opt/conda/bin/conda run -n findbot pip install -r /tmp/requirements.txt
-
-# Set the default shell to use the 'findbot' environment
-SHELL ["conda", "run", "-n", "findbot", "/bin/bash", "-c"]
+RUN /opt/conda/bin/conda init && source ~/.bashrc && /opt/conda/bin/conda activate findbot
 
 # Set the default command to run when starting the container
 CMD ["bash"]
