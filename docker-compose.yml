@@ -4,6 +4,7 @@ services:
   findbot:
     build:
       context: .
+    image: findbot:latest
     container_name: findbot
     volumes:
       - ./testbackend:/app
@@ -18,8 +19,9 @@ services:
         limits:
           memory: 500M
     command: /opt/conda/envs/findbot/bin/python /app/test.py
+    ports:
+      - "80:80"
 
 networks:
   findbot_network:
     driver: bridge
-
