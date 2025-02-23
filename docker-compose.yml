@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  findbot:
+    build:
+      dockerfile: ./Dockerfile
+    container_name: findbot
+    volumes:
+      - ./testbackend:/app
+    environment:
+      - PORT=80
+    networks:
+      - findbot_network
+    restart: "no"
+
+networks:
+  findbot_network:
+    driver: bridge
