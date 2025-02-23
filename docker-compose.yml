@@ -3,6 +3,7 @@ version: '3.8'
 services:
   findbot:
     build:
+      context: ./testbackend
       dockerfile: ./Dockerfile
     container_name: findbot
     volumes:
@@ -16,7 +17,9 @@ services:
       resources:
         limits:
           memory: 500M
+    command: python /app/test.py
 
 networks:
   findbot_network:
     driver: bridge
+
