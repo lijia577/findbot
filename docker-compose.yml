@@ -12,6 +12,10 @@ services:
     networks:
       - findbot_network
     restart: "no"
+    deploy:
+      resources:
+        limits:
+          memory: 500M
 
 networks:
   findbot_network:
