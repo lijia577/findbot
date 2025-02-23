@@ -18,14 +18,14 @@ async def process(websocket):  # Removed 'path' parameter as it's no longer need
 
 async def main():
     print("WebSocket server starting", flush=True)
-    
+    port = int(os.environ.get('PORT', 8090))
     # Create the server with CORS headers
     async with websockets.serve(
         process,
         "0.0.0.0",
-        int(os.environ.get('PORT', 8090))
+        port
     ) as server:
-        print("WebSocket server running on port 8090", flush=True)
+        print(f"WebSocket server running on port {port}", flush=True)
         await asyncio.Future()  # run forever
 
 if __name__ == "__main__":

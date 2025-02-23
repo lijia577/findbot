@@ -4,10 +4,9 @@ services:
   findbot:
     build:
       context: .
-      dockerfile: ./Dockerfile
     container_name: findbot
     volumes:
-      - testbackend:/app
+      - ./testbackend:/app
     environment:
       - PORT=80
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -18,7 +17,7 @@ services:
       resources:
         limits:
           memory: 500M
-    command: python /app/test.py
+    command: /opt/conda/envs/findbot/bin/python /app/test.py
 
 networks:
   findbot_network:
