@@ -3,11 +3,11 @@ version: '3.8'
 services:
   findbot:
     build:
-      context: $(pwd)
+      context: .
       dockerfile: ./Dockerfile
     container_name: findbot
     volumes:
-      - ./testbackend:/app
+      - testbackend:/app
     environment:
       - PORT=80
       - OPENAI_API_KEY=${OPENAI_API_KEY}
