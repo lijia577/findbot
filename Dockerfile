@@ -33,3 +33,5 @@ SHELL ["conda", "run", "-n", "findbot", "/bin/bash", "-c"]
 
 # Set the default command to run when starting the container
 CMD ["bash"]
+
+RUN /opt/conda/bin/conda activate findbot
